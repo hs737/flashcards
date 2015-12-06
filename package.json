@@ -1,0 +1,11 @@
+{
+  "name": "FlashCards",
+  "version": "1.0.0",
+  "description": "Server side code for supporting flash cards",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harsh Sinha",
+  "license": "ISC"
+}
