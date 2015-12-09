@@ -10,4 +10,7 @@ var deckSchema = new Schema({
 var Deck = mongoose.model("Deck", deckSchema, "decks");
 
 /** Main **/
-model.exports = Deck;
+model.exports = {
+    schema: deckSchema,
+    model: Deck
+};

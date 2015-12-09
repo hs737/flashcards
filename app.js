@@ -4,7 +4,6 @@ var mongoose = require('mongoose');
 
 /** Instantiations **/
 var app = express();
-mongoose.connect('mongodb://localhost/flashcards');
 
 /** Configurations **/
 /** Middleware **/
@@ -14,7 +13,7 @@ app.get('/', function (req, res) {
 });
 
 /** Boot Up **/
-var server = app.listen(3000, function () {
+var server = app.listen(8000, function () {
   var host = server.address().address;
   var port = server.address().port;
 

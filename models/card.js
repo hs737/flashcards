@@ -14,4 +14,7 @@ var cardSchema = new Schema({
 var Card = mongoose.model("Card", cardSchema, "cards");
 
 /** Main **/
-module.exports = Card;
+module.exports = {
+    schema: cardSchema,
+    model: Card
+};
