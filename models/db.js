@@ -13,7 +13,7 @@ var mongoose = require('mongoose');
 var dbURI = 'mongodb://localhost/flashcards';
 
 /** Main **/
-mongoose.connect(dbURI);
+var db = mongoose.connect(dbURI);
 
 /** Event Handlers **/
 mongoose.connection.on('connected', function () {
@@ -34,3 +34,5 @@ process.on('SIGINT', function() {
         process.exit(0);
     });
 });
+
+module.exports = db;
