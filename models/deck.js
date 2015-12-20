@@ -1,18 +1,23 @@
 /** Dependencies **/
 var mongoose = require('mongoose');
 
-/** Global Variables **/
-var Schema = mongoose.Schema;
-var deckSchema = new Schema({
+/** Module Variables **/
+var deckSchema = new mongoose.Schema({
     name: String,
     fields: [String]
 });
-var Deck = mongoose.model("Deck", deckSchema, "decks");
 
-/** Main **/
+/** Static Methods **/
+deckSchema.statics.getAllDecks = function(err, callback) {
+    var result = [1];
+    callback(err, result);
+}
+
+/** Instance Methods **/
+
+
+var Deck = mongoose.model("Deck", deckSchema, "decks");
 module.exports = {
     schema: deckSchema,
     model: Deck
 };
-
-/** Methods **/

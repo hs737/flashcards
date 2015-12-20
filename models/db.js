@@ -13,9 +13,6 @@ var mongoose = require('mongoose');
 //var dbURI = 'mongodb://localhost/flashcards';
 var dbURI = 'mongodb://localhost:27017/flashcards';
 
-/** Main **/
-mongoose.connect(dbURI);
-
 /** Event Handlers **/
 mongoose.connection.on('connected', function () {
     console.log('Mongoose> connected: ' + dbURI);
