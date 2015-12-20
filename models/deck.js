@@ -14,3 +14,5 @@ module.exports = {
     schema: deckSchema,
     model: Deck
 };
+
+/** Methods **/

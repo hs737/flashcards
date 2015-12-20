@@ -12,20 +12,33 @@ var mockgoose = require("mockgoose");
 
 /** Mock the database **/
 mockgoose(mongoose);
-//var db = require('../models/db');
-//var Deck = require("../models/deck");
+//var DB = undefined;
+DB = require('../models/db');
+var deckDetails = require("../models/deck");
+var Deck = deckDetails.model;
 
 /** Global Variables **/
 process.env.NODE_ENV = 'test';
 
 /** Main **/
-
-
 describe("Deck", function() {
+    before(function(done) {
+        Deck.remove({});
+        Deck.find({}, function(err, docs) {
+            assert.equal(0, docs.length)
+        })
+
+        done();
+    });
+
+    after(function(done) {
+        done();
+    });
+
     beforeEach(function(done) {
         // runs before each test in this block
-         mockgoose.reset(); // TODO: Call does not seem to work for a single collection
-        //console.log(mongoose.collections);
+        // mockgoose.reset(); // TODO: Call does not seem to work for a single collection
+        // console.log(DB);
         done();
     });
 

@@ -10,10 +10,11 @@
 var mongoose = require('mongoose');
 
 /** Global Variables **/
-var dbURI = 'mongodb://localhost/flashcards';
+//var dbURI = 'mongodb://localhost/flashcards';
+var dbURI = 'mongodb://localhost:27017/flashcards';
 
 /** Main **/
-var db = mongoose.connect(dbURI);
+mongoose.connect(dbURI);
 
 /** Event Handlers **/
 mongoose.connection.on('connected', function () {
@@ -35,4 +36,4 @@ process.on('SIGINT', function() {
     });
 });
 
-module.exports = db;
+module.exports = mongoose.connection;
