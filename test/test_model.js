@@ -7,13 +7,14 @@
  */
 
 /** Requires **/
-var mongoose = require("mongoose");
-var mockgoose = require("mockgoose");
-var async = require("async");
-var should = require("chai").should();
+const mongoose = require("mongoose");
+const mockgoose = require("mockgoose");
+const async = require("async");
+const should = require("chai").should();
+require("../models/deck");
 
-var Deck = require("../models/deck");
-var deckData = require("./data/data_deck.json");
+const Deck = mongoose.model("Deck");
+const deckData = require("./data/data_deck.json");
 
 /** Mock the database **/
 mockgoose(mongoose);
@@ -28,26 +29,26 @@ describe("Deck", function() {
     beforeEach(function(done) {
         async.series([
             function(callback) {
-                resetCollection(Deck.model);
+                resetCollection(Deck);
                 callback();
             },
             function(callback) {
-                loadData(Deck.model, deckData);
+                loadData(Deck, deckData);
                 callback();
             }
         ]);
         done();
     });
 
-    describe("Creation", function() {
-        it("creates a deck when input is valid", function() {
-
-        });
-
-        //it("does not create a deck when input is invalid", function() {
-        //
-        //});
-    })
+    //describe("Creation", function() {
+    //    it("creates a deck when input is valid", function() {
+    //
+    //    });
+    //
+    //    //it("does not create a deck when input is invalid", function() {
+    //    //
+    //    //});
+    //})
     //
     //describe("Deletion", function() {
     //    it("deletes a deck when input is valid", function() {
@@ -64,12 +65,19 @@ describe("Deck", function() {
     //});
 
     it("gets all decks", function() {
-        Deck.model.getAllDecks(null, function(err, decks) {
+        Deck.getAllDecks(null, function(err, decks) {
             should.exist(decks);
             should.equal(decks.length, deckData.length);
 
             for (var i = 0, len = deckData.length; i < len; i++) {
-                should.equal(decks[i].name, deckData[i].name);
+                var dbDeck = decks[i];
+                var jsonDeck = deckData[i];
+
+                should.equal(dbDeck.name, jsonDeck.name);
+                for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
+                    should.equal(dbDeck.fields[j], jsonDeck.fields[j].name);
+                }
+
 
                 // TODO: Check for equality of fields
             }
