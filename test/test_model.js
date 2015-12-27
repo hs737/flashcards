@@ -40,16 +40,63 @@ describe("Deck", function() {
         done();
     });
 
-    //describe("Creation", function() {
-    //    it("creates a deck when input is valid", function() {
-    //
-    //    });
-    //
-    //    //it("does not create a deck when input is invalid", function() {
-    //    //
-    //    //});
-    //})
-    //
+    describe("Creation", function() {
+        var deckName;
+        var fieldNames;
+
+        beforeEach(function (done) {
+            deckName = 'Test Deck 3';
+            fieldNames = ['coli', 'colii', 'coliii'];
+            done();
+        });
+
+        it("should create a deck when input is valid", function() {
+            Deck.createDeck(deckName, fieldNames, function(err) {
+                should.not.exist(err);
+            });
+        });
+
+        it("should refuse a null deck name", function() {
+            deckName = null;
+
+            Deck.createDeck(deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty deck name", function() {
+            deckName = "";
+
+            Deck.createDeck(deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a non-string array passed in for a field array", function() {
+            fieldNames = null;
+
+            Deck.createDeck(deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a null field", function() {
+            fieldNames[0] = null;
+
+            Deck.createDeck(deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty field", function() {
+            fieldNames[0] = "";
+
+            Deck.createDeck(deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+    })
+
     //describe("Deletion", function() {
     //    it("deletes a deck when input is valid", function() {
     //
@@ -65,7 +112,7 @@ describe("Deck", function() {
     //});
 
     it("gets all decks", function() {
-        Deck.getAllDecks(null, function(err, decks) {
+        Deck.getAllDecks(function(err, decks) {
             should.exist(decks);
             should.equal(decks.length, deckData.length);
 
@@ -77,9 +124,6 @@ describe("Deck", function() {
                 for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
                     should.equal(dbDeck.fields[j], jsonDeck.fields[j].name);
                 }
-
-
-                // TODO: Check for equality of fields
             }
         });
     });
