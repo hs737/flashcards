@@ -14,7 +14,7 @@ const should = require("chai").should();
 require("../models/deck");
 
 const Deck = mongoose.model("Deck");
-const deckData = require("./data/data_deck.json");
+const deckData = require("./data/data_deck.js");
 
 /** Mock the database **/
 mockgoose(mongoose);
@@ -44,10 +44,9 @@ describe("Deck", function() {
         var deckName;
         var fieldNames;
 
-        beforeEach(function (done) {
+        beforeEach(function () {
             deckName = 'Test Deck 3';
             fieldNames = ['coli', 'colii', 'coliii'];
-            done();
         });
 
         it("should create a deck when input is valid", function() {
@@ -97,16 +96,25 @@ describe("Deck", function() {
         });
     })
 
-    //describe("Deletion", function() {
-    //    it("deletes a deck when input is valid", function() {
-    //
-    //    });
-    //
-    //    it("does not delete a deck when input is invalid", function() {
-    //
-    //    });
-    //})
-    //
+    describe("Deletion", function() {
+        it("should delete a deck when input is valid", function() {
+            var deckId = deckData[0]._id;
+            Deck.deleteDeck(deckName, fieldNames, function(err) {
+                should.not.exist(err);
+
+            });
+
+        });
+
+        it("should refuse a null deck id", function() {
+
+        });
+
+        it("should refuse an invalid deck id", function() {
+
+        });
+    })
+
     //it("edits a deck", function() {
     //
     //});
