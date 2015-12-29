@@ -40,7 +40,7 @@ describe("Deck", function() {
         done();
     });
 
-    describe("Creation", function() {
+    describe("Creating a deck", function() {
         var deckName;
         var fieldNames;
 
@@ -52,6 +52,7 @@ describe("Deck", function() {
         it("should create a deck when input is valid", function() {
             Deck.createDeck(deckName, fieldNames, function(err) {
                 should.not.exist(err);
+                // TODO: This is not a robust test. Test needs improvement.
             });
         });
 
@@ -96,7 +97,7 @@ describe("Deck", function() {
         });
     })
 
-    describe("Deletion", function() {
+    describe("Deleting a deck", function() {
         it("should delete a deck when input is valid", function() {
             var deckId = deckData[0]._id;
             Deck.deleteDeck(deckId, function(err) {
@@ -133,11 +134,103 @@ describe("Deck", function() {
         });
     })
 
-    //it("edits a deck", function() {
-    //
-    //});
+    describe("Updating a deck", function() {
+        var deckName;
+        var fieldNames;
+        var deckId;
 
-    it("gets all decks", function() {
+        beforeEach(function () {
+            // Value "000000000001" is hardcoded under the assumption that data_deck.js starts its ObjectIds at "000000000001"
+            deckId = mongoose.mongo.ObjectID("000000000001");
+            deckName = 'Test Deck 3';
+            fieldNames = ['coli', 'colii', 'coliii'];
+        });
+
+        it("should update a deck when input is valid", function() {
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.not.exist(err);
+
+                Deck.findById(deckId, function(err, decks) {
+                    should.not.exist(err);
+                    should.equal(1, decks.length);
+
+                    var dbDeck = decks[0];
+                    should.equal(dbDeck.name, deckName);
+                    for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
+                        should.equal(dbDeck.fields[j], fieldNames[j]);
+                    }
+                });
+            });
+
+        });
+
+        it("should refuse a deck id that does not exist in collection", function() {
+            // Value "000000000000" is hardcoded under the assumption that data_deck.js starts its ObjectIds at "000000000001"
+            var deckId = mongoose.mongo.ObjectID("000000000000");
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a null deck id", function() {
+            var deckId = null;
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty deck id", function() {
+            var deckId = "";
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a null deck name", function() {
+            deckName = null;
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty deck name", function() {
+            deckName = "";
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a non-string array passed in for a field array", function() {
+            fieldNames = null;
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a null field", function() {
+            fieldNames[0] = null;
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty field", function() {
+            fieldNames[0] = "";
+
+            Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
+                should.exist(err);
+            });
+        });
+    });
+
+    it("should get all decks", function() {
         Deck.getAllDecks(function(err, decks) {
             should.exist(decks);
             should.equal(decks.length, deckData.length);
@@ -148,7 +241,7 @@ describe("Deck", function() {
 
                 should.equal(dbDeck.name, jsonDeck.name);
                 for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
-                    should.equal(dbDeck.fields[j], jsonDeck.fields[j].name);
+                    should.equal(dbDeck.fields[j], jsonDeck.fields[j]);
                 }
             }
         });
