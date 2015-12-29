@@ -69,7 +69,14 @@ deckSchema.statics = {
      * @param {errorCallback} callback - The callback function to return the retreived decks
      */
     deleteDeck: function (deckId, callback) {
+        if (deckId == null || !mongoose.Types.ObjectId.isValid(deckId.toString())) {
+            callback(new Error("Invalid object id '" + deckId) + "'");
+            return;
+        }
 
+        Deck.remove({_id: deckId}, function(err) {
+            callback(err);
+        });
     }
 };
 

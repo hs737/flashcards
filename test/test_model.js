@@ -99,19 +99,37 @@ describe("Deck", function() {
     describe("Deletion", function() {
         it("should delete a deck when input is valid", function() {
             var deckId = deckData[0]._id;
-            Deck.deleteDeck(deckName, fieldNames, function(err) {
+            Deck.deleteDeck(deckId, function(err) {
                 should.not.exist(err);
-
+                Deck.find({_id: deckId}, function(err, docs) {
+                    should.equal(0, docs.length);
+                });
+                Deck.find({}, function(err, docs) {
+                    should.equal(deckData.length - 1, docs.length);
+                });
             });
+        });
 
+        it("should refuse a deck id that does not exist in collection", function() {
+            // Value "000000000000" is hardcoded under the assumption that data_deck.js starts its ObjectIds at "000000000001"
+            var deckId = mongoose.mongo.ObjectID("000000000000");
+            Deck.deleteDeck(deckId, function(err) {
+                should.exist(err);
+            });
         });
 
         it("should refuse a null deck id", function() {
-
+            var deckId = null;
+            Deck.deleteDeck(deckId, function(err) {
+                should.exist(err);
+            });
         });
 
-        it("should refuse an invalid deck id", function() {
-
+        it("should refuse an empty deck id", function() {
+            var deckId = "";
+            Deck.deleteDeck(deckId, function(err) {
+                should.exist(err);
+            });
         });
     })
 
