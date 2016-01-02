@@ -1,43 +1,43 @@
 /**
- * test_model.js
+ * test_model_deck.js
  *
- * Unit testing MongoDB collections
+ * Unit testing MongoDB collection: Deck
  *
  * Created by hs737 on 12/9/15.
  */
 
-/** Requires **/
+/**** Dependencies ****/
 const mongoose = require("mongoose");
 const mockgoose = require("mockgoose");
 const async = require("async");
 const should = require("chai").should();
+const utility = require('./test_utility_model');
 require("../models/deck");
 require("../models/card");
 
+/**** Module Variables ****/
 const Deck = mongoose.model("Deck");
-const Card = mongoose.model("Card");
 const mockData = require("./data/mock_data.js");
 const deckData = mockData.deckData;
-const cardData = mockData.cardData;
 
-/** Mock the database **/
+/**** Mock the database ****/
 mockgoose(mongoose);
 DB = require('../models/db');
 
-/** Global Variables **/
+/**** Global Variables ****/
 process.env.NODE_ENV = 'test';
 
-/** Main **/
+/**** Main ****/
 describe("Deck", function() {
 
     beforeEach(function(done) {
         async.series([
             function(callback) {
-                resetCollection(Deck);
+                utility.resetCollection(Deck);
                 callback();
             },
             function(callback) {
-                loadData(Deck, deckData);
+                utility.loadData(Deck, deckData);
                 callback();
             }
         ]);
@@ -99,7 +99,7 @@ describe("Deck", function() {
                 should.exist(err);
             });
         });
-    })
+    });
 
     describe("Deleting a deck", function() {
         it("should delete a deck when input is valid", function() {
@@ -136,7 +136,7 @@ describe("Deck", function() {
                 should.exist(err);
             });
         });
-    })
+    });
 
     describe("Updating a deck", function() {
         var deckName;
@@ -237,15 +237,20 @@ describe("Deck", function() {
     describe("Getting all/any decks", function() {
         it("should get all decks", function () {
             Deck.getAllDecks(function (err, decks) {
+                should.not.exist(err);
                 should.exist(decks);
+
                 should.equal(decks.length, deckData.length);
 
+                // Assumption: order of arrays is same. This is not guaranteed
                 for (var i = 0, len = deckData.length; i < len; i++) {
                     var dbDeck = decks[i];
                     var jsonDeck = deckData[i];
 
                     should.equal(dbDeck.name, jsonDeck.name);
-                    for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
+
+                    // Assumption: order of arrays is same. This is not guaranteed
+                    for (var j = 0, flen = dbDeck.fields.length; j < flen; j++) {
                         should.equal(dbDeck.fields[j], jsonDeck.fields[j]);
                     }
                 }
@@ -253,66 +258,3 @@ describe("Deck", function() {
         });
     });
 });
-
-describe("Cards", function() {
-
-    beforeEach(function(done) {
-        async.series([
-            function(callback) {
-                resetCollection(Card);
-                resetCollection(Deck);
-                callback();
-            },
-            function(callback) {
-                loadData(Deck, deckData);
-                callback();
-            }
-        ]);
-        done();
-    });
-
-    describe("Getting a deck", function() {
-        it("should get a deck and its contents", function() {
-
-        });
-    })
-
-//    it("adds a card to a deck", function() {
-//
-//    });
-//
-//    it("removes a card from a deck", function() {
-//
-//    });
-//
-//    it("edits a card in a deck", function() {
-//
-//    });
-});
-
-/** Helper **/
-function resetCollection(collection) {
-    async.series([
-        function(callback) {
-            collection.remove({}, function(err) {
-                console.log(err);
-                callback(err);
-            });
-        },
-        function(callback) {
-            collection.find({}, function(err, docs) {
-                assert.equal(0, docs.length)
-                callback(err);
-            });
-        }
-    ]);
-}
-
-function loadData(collection, data) {
-    collection.create(data, function(err, records) {
-        if (err) {
-            console.log(err);
-        }
-        console.log(records);
-    });
-}

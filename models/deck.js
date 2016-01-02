@@ -1,5 +1,6 @@
 /**** Dependencies ****/
 const mongoose = require('mongoose');
+const utility = require('./model_utility');
 
 /**** Module Variables ****/
 const deckSchema = new mongoose.Schema({
@@ -12,11 +13,11 @@ deckSchema.statics = {
     /**
      * getAllDecks
      *
-     * @param {documentCallback} callback - The callback function to return the retreived decks
+     * @param {documentsCallback} callback - The callback function to return the retreived decks
      */
     getAllDecks: function(callback) {
         this.find({}, function(err, docs) {
-            console.log(docs);
+            //console.log(docs);
             callback(err, docs);
         });
     },
@@ -29,12 +30,12 @@ deckSchema.statics = {
      * @param {errorCallback} callback - The callback function to return the retreived decks
      */
     createDeck: function(name, fields, callback) {
-        var deckNameValidation = validateDeckName(name);
+        var deckNameValidation = utility.validateDeckName(name);
         if (!deckNameValidation.isValid) {
             callback(new Error(deckNameValidation.message));
             return;
         }
-        var deckFieldsValidation = validateDeckFields(fields);
+        var deckFieldsValidation = utility.validateDeckFields(fields);
         if (!deckFieldsValidation.isValid) {
             callback(new Error(deckFieldsValidation.message));
             return;
@@ -54,7 +55,7 @@ deckSchema.statics = {
      * @param {errorCallback} callback - The callback function to return the retreived decks
      */
     deleteDeck: function (deckId, callback) {
-        var deckIdValidation = validateDeckId(deckId);
+        var deckIdValidation = utility.validateDeckId(deckId);
         if (!deckIdValidation.isValid) {
             callback(new Error(deckIdValidation.message));
             return;
@@ -74,17 +75,17 @@ deckSchema.statics = {
      * @param {errorCallback} callback - The callback function to return the retreived decks
      */
     updateDeck: function (deckId, name, fields, callback) {
-        var deckIdValidation = validateDeckId(deckId);
+        var deckIdValidation = utility.validateDeckId(deckId);
         if (!deckIdValidation.isValid) {
             callback(new Error(deckIdValidation.message));
             return;
         }
-        var deckNameValidation = validateDeckName(name);
+        var deckNameValidation = utility.validateDeckName(name);
         if (!deckNameValidation.isValid) {
             callback(new Error(deckNameValidation.message));
             return;
         }
-        var deckFieldsValidation = validateDeckFields(fields);
+        var deckFieldsValidation = utility.validateDeckFields(fields);
         if (!deckFieldsValidation.isValid) {
             callback(new Error(deckFieldsValidation.message));
             return;
@@ -102,80 +103,7 @@ deckSchema.statics = {
 /**** Mongoose Model ****/
 var Deck = mongoose.model("Deck", deckSchema, "decks");
 
-/** Helper Methods **/
-
-/**
- * validateDeckId
- *
- * @param {string} deckId - The database document id of the deck
- * @returns {ValidationObject}
- */
-function validateDeckId(deckId) {
-    var result = {
-        isValid: true,
-        message: undefined
-    };
-
-    if (deckId == null || !mongoose.Types.ObjectId.isValid(deckId.toString())) {
-        result.isValid = false;
-        result.message = "Invalid object id '" + deckId + "'";
-    }
-
-    return result;
-}
-
-/**
- * validateDeckName
- *
- * @param {string} name - The name of the newly created deck
- * @returns {ValidationObject}
- */
-function validateDeckName(name) {
-    var result = {
-        isValid: true,
-        message: undefined
-    };
-
-    if (name == null) {
-        result.isValid = false;
-        result.message = "Deck name is null";
-    } else if (name.length == 0) {
-        result.isValid = false;
-        result.message = "Deck name is empty";
-    }
-
-    return result;
-}
-
-/**
- * validateDeckFields
- *
- * @param {string[]} fields - The list of fields in this specific deck
- * @returns {ValidationObject}
- */
-function validateDeckFields(fields) {
-    var result = {
-        isValid: true,
-        message: undefined
-    };
-
-    if (fields == null) {
-        result.isValid = false;
-        result.message = "Fields name is null";
-    } else if (fields.reduce(function(prev, curr) {
-            return (prev && curr);
-        }, new Object()) == null) {
-        result.isValid = false;
-        result.message = "A field passed in the field array is null";
-    } else if (fields.reduce(function(prev, curr) {
-            return (prev || (curr.length == 0));
-        }, false)) {
-        result.isValid = false;
-        result.message = "A field passed in the field array is empty";
-    }
-
-    return result;
-}
+/**** Helper Methods ****/
 
 /**** Global JSDoc Documentation ****/
 /**
@@ -191,14 +119,8 @@ function validateDeckFields(fields) {
  * @property {string} message - Explanation of error
  */
 /**
- * A validation object
- * @typedef {Object} ValidationObject
- * @property {boolean} isValid - Variable to determine is valid or not
- * @property {string} message - Explanation of error
- */
-/**
  * Global callback is displayed as a global member.
- * @callback documentCallback
+ * @callback documentsCallback
  * @param {Deck[]} decks
  */
 /**
