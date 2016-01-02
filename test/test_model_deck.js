@@ -1,7 +1,7 @@
 /**
- * test_deck.js
+ * test_model.js
  *
- * Unit testing MongoDB collection 'Deck'
+ * Unit testing MongoDB collections
  *
  * Created by hs737 on 12/9/15.
  */
@@ -12,9 +12,13 @@ const mockgoose = require("mockgoose");
 const async = require("async");
 const should = require("chai").should();
 require("../models/deck");
+require("../models/card");
 
 const Deck = mongoose.model("Deck");
-const deckData = require("./data/data_deck.js");
+const Card = mongoose.model("Card");
+const mockData = require("./data/mock_data.js");
+const deckData = mockData.deckData;
+const cardData = mockData.cardData;
 
 /** Mock the database **/
 mockgoose(mongoose);
@@ -112,7 +116,7 @@ describe("Deck", function() {
         });
 
         it("should refuse a deck id that does not exist in collection", function() {
-            // Value "000000000000" is hardcoded under the assumption that data_deck.js starts its ObjectIds at "000000000001"
+            // Value "000000000000" is hardcoded under the assumption that mock_data.js starts its ObjectIds at "000000000001"
             var deckId = mongoose.mongo.ObjectID("000000000000");
             Deck.deleteDeck(deckId, function(err) {
                 should.exist(err);
@@ -140,7 +144,7 @@ describe("Deck", function() {
         var deckId;
 
         beforeEach(function () {
-            // Value "000000000001" is hardcoded under the assumption that data_deck.js starts its ObjectIds at "000000000001"
+            // Value "000000000001" is hardcoded under the assumption that mock_data.js starts its ObjectIds at "000000000001"
             deckId = mongoose.mongo.ObjectID("000000000001");
             deckName = 'Test Deck 3';
             fieldNames = ['coli', 'colii', 'coliii'];
@@ -165,7 +169,7 @@ describe("Deck", function() {
         });
 
         it("should refuse a deck id that does not exist in collection", function() {
-            // Value "000000000000" is hardcoded under the assumption that data_deck.js starts its ObjectIds at "000000000001"
+            // Value "000000000000" is hardcoded under the assumption that mock_data.js starts its ObjectIds at "000000000001"
             var deckId = mongoose.mongo.ObjectID("000000000000");
 
             Deck.updateDeck(deckId, deckName, fieldNames, function(err) {
@@ -230,29 +234,49 @@ describe("Deck", function() {
         });
     });
 
-    it("should get all decks", function() {
-        Deck.getAllDecks(function(err, decks) {
-            should.exist(decks);
-            should.equal(decks.length, deckData.length);
+    describe("Getting all/any decks", function() {
+        it("should get all decks", function () {
+            Deck.getAllDecks(function (err, decks) {
+                should.exist(decks);
+                should.equal(decks.length, deckData.length);
 
-            for (var i = 0, len = deckData.length; i < len; i++) {
-                var dbDeck = decks[i];
-                var jsonDeck = deckData[i];
+                for (var i = 0, len = deckData.length; i < len; i++) {
+                    var dbDeck = decks[i];
+                    var jsonDeck = deckData[i];
 
-                should.equal(dbDeck.name, jsonDeck.name);
-                for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
-                    should.equal(dbDeck.fields[j], jsonDeck.fields[j]);
+                    should.equal(dbDeck.name, jsonDeck.name);
+                    for (var j = 0, flen = dbDeck.fields.length; i < flen; i++) {
+                        should.equal(dbDeck.fields[j], jsonDeck.fields[j]);
+                    }
                 }
-            }
+            });
         });
     });
 });
 
-//describe("Cards", function() {
-//    it("gets a deck and its contents", function() {
-//
-//    });
-//
+describe("Cards", function() {
+
+    beforeEach(function(done) {
+        async.series([
+            function(callback) {
+                resetCollection(Card);
+                resetCollection(Deck);
+                callback();
+            },
+            function(callback) {
+                loadData(Deck, deckData);
+                callback();
+            }
+        ]);
+        done();
+    });
+
+    describe("Getting a deck", function() {
+        it("should get a deck and its contents", function() {
+
+        });
+    })
+
 //    it("adds a card to a deck", function() {
 //
 //    });
@@ -264,7 +288,7 @@ describe("Deck", function() {
 //    it("edits a card in a deck", function() {
 //
 //    });
-//});
+});
 
 /** Helper **/
 function resetCollection(collection) {
