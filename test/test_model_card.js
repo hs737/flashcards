@@ -84,6 +84,25 @@ describe("Cards", function() {
         });
     });
 
+    describe("Adding a card to a deck", function() {
+        var deckId;
+        var fieldData;
+
+        beforeEach(function() {
+            deckId = mongoose.mongo.ObjectID("000000000001");
+            fieldData = [{"name": "col1", "value": 12},
+                         {"name": "col2", "value": 123},
+                         {"name": "col3", "value": 1234}];
+        });
+
+        it("should create a card when input is valid", function() {});
+        it("should refuse a deck id that does not exist in collection", function() {});
+        it("should refuse a null deck id", function() {});
+        it("should refuse an empty deck id", function() {});
+        it("should refuse a null field list", function() {});
+        it("should refuse an empty field list", function() {});
+        it("should refuse a field list that is not formatted correctly", function() {});
+    });
 //    it("adds a card to a deck", function() {
 //
 //    });
