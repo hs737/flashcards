@@ -18,7 +18,7 @@ cardSchema.statics = {
     /**
      * getCardsByDeckId
      *
-     * @param {string} deckId -  The database document id of the deck
+     * @param {string} deckId - The database document id of the deck
      * @param {documentCallback} callback - The callback function to return the retreived deck
      */
     getCardsByDeckId: function(deckId, callback) {
@@ -31,6 +31,17 @@ cardSchema.statics = {
         this.find({"deck_id": deckId}, function(err, docs) {
             callback(err, docs);
         })
+    },
+
+    /**
+     * addCardToDeck
+     *
+     * @param {string} deckId - The database document id of the deck
+     * @param {Field[]} fieldArray - Fields of a card
+     * @param {errorCallback} callback
+     */
+    addCardToDeck: function(deckId, fieldArray, callback) {
+        callback({name: "trouble", message: "uh oh"});
     }
 };
 

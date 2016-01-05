@@ -95,18 +95,68 @@ describe("Cards", function() {
                          {"name": "col3", "value": 1234}];
         });
 
-        it("should create a card when input is valid", function() {});
-        it("should refuse a deck id that does not exist in collection", function() {});
-        it("should refuse a null deck id", function() {});
-        it("should refuse an empty deck id", function() {});
-        it("should refuse a null field list", function() {});
-        it("should refuse an empty field list", function() {});
-        it("should refuse a field list that is not formatted correctly", function() {});
+        it("should create a card when input is valid", function() {
+            // TODO
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.not.exist(err);
+            });
+        });
+        it("should refuse a deck id that does not exist in collection", function() {
+            // TODO
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a null deck id", function() {
+            var deckId = null;
+
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty deck id", function() {
+            var deckId = "";
+
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a null field list", function() {
+            fieldData = null;
+
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse an empty field list", function() {
+            fieldData = [];
+
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a field list that is not formatted correctly", function() {
+            fieldData[0] = {"broken_name": "col1", "broken_value": 12};
+
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
+
+        it("should refuse a field name that does not exist", function() {
+            fieldData[0] = {"name": "col_does_not_exist", "value": 12};
+
+            Card.addCardToDeck(deckId, fieldData, function(err) {
+                should.exist(err);
+            });
+        });
     });
-//    it("adds a card to a deck", function() {
-//
-//    });
-//
+
 //    it("removes a card from a deck", function() {
 //
 //    });

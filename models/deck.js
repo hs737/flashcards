@@ -27,7 +27,7 @@ deckSchema.statics = {
      *
      * @param {string} name - The name of the newly created deck
      * @param {string[]} fields - The list of fields in this specific deck
-     * @param {errorCallback} callback - The callback function to return the retreived decks
+     * @param {errorCallback} callback - The callback function to return the retrieved decks
      */
     createDeck: function(name, fields, callback) {
         var deckNameValidation = utility.validateDeckName(name);
